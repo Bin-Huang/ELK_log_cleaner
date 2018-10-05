@@ -8,8 +8,6 @@ import (
         "github.com/olivere/elastic"
 )
 
-const LOG_INDEX_NAME_FORMAT = "logstash-2006.01.02"
-
 func RemoveLogsBefore(before time.Time, client *elastic.Client) (*elastic.IndicesDeleteResponse, error) {
         names, err := client.IndexNames()
         if err != nil {

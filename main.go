@@ -19,7 +19,7 @@ func main() {
 
 	c := cron.New()
 	c.AddFunc("@daily", func() {
-		t := time.Now().Add(-1 * 30 * 24 * time.Hour)
+		t := time.Now().Add(-1 * ONLY_REMAIN_LOG_IN_DURATION)
 		_, err := RemoveLogsBefore(t, cilent)
 		if err != nil {
 			fmt.Println(err)
@@ -27,5 +27,7 @@ func main() {
 	})
 
 	c.Start()
+	fmt.Println("cleaner cron job is running")
+
 	w.Wait()
 }
