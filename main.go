@@ -1,34 +1,28 @@
 package main
 
 import (
-	"sync"
-	"time"
 	"fmt"
-	"github.com/robfig/cron"
+	"time"
 )
 
-var w sync.WaitGroup
-
 func main() {
-	cilent, err := getClient()
+	es, err := getEsClient()
 	if err != nil {
 		fmt.Println("can not connect with elasticsearch", err)
 		return
 	}
-	w.Add(1)
 
-	c := cron.New()
-	c.AddFunc("@daily", func() {
+	fmt.Println("cleaner is running")
+
+	for {
+		<-time.After(24 * time.Hour)
+
 		t := time.Now().Add(-1 * ONLY_REMAIN_LOG_IN_DURATION)
-		_, err := RemoveLogsBefore(t, cilent)
+		_, err := RemoveLogsBefore(t, es)
 		if err != nil {
 			fmt.Println(err)
 		}
-		fmt.Println("cleaning")
-	})
+		fmt.Println("cleaned")
+	}
 
-	c.Start()
-	fmt.Println("cleaner cron job is running")
-
-	w.Wait()
 }
